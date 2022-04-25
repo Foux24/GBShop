@@ -9,11 +9,52 @@ import UIKit
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
-
+    
+    /// Логин
+    let login = LoginBuilder.build()
+    
+    /// Регистрация
+    let regist = RegistrationBuilder.build()
+    
+    /// Logout
+    let logout = LogoutBuilder.build()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        /// Login
+        let login = login.service
+        login.authorisation { result in
+            switch result {
+            case .success(let resultLogin):
+                print(resultLogin)
+            case .failure(let error):
+                print(error)
+            }
+        }
+        
+        /// Registration
+        let regist = regist.service
+        regist.registration { result in
+            switch result {
+            case .success(let resultLogin):
+                print(resultLogin)
+            case .failure(let error):
+                print(error)
+            }
+        }
+        
+        
+        /// Logout
+        let logout = logout.service
+        logout.logout { result in
+            switch result {
+            case .success(let resultLogin):
+                print(resultLogin)
+            case .failure(let error):
+                print(error)
+            }
+        }
+        
         return true
     }
 
