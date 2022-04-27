@@ -2,7 +2,7 @@
 //  LoginBuilder.swift
 //  GeekBrainsShop
 //
-//  Created by Vitalii Sukhoroslov on 25.04.2022.
+//  Created by Vitalii Sukhoroslov on 27.04.2022.
 //
 
 import UIKit
@@ -10,10 +10,10 @@ import UIKit
 // MARK: - LoginBuilder
 final class LoginBuilder {
     
-    /// Builder
-    static func build() -> Login {
-        let network = NetworkService()
-        let login = Login(service: network)
-        return login
+    /// Build
+    static func build() -> LoginInteracotr {
+        let networkService = NetworkService()
+        let interactor = LoginInteracotr(service: networkService)
+        return interactor
     }
 }

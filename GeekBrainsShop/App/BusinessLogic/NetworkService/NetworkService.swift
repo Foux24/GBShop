@@ -21,6 +21,18 @@ protocol NetworkServiceInput {
     /// Выход
     ///  - Parameter complition: Блок обрабатывающий резултат
     func logout(completion: @escaping (Result<LogoutResult, RequestError>) -> Void)
+    
+    /// Изменение данных пользователя
+    ///  - Parameter complition: Блок обрабатывающий резултат
+    func changeUserData(completion: @escaping (Result<ChangeUserDataResult, RequestError>) -> Void)
+    
+    /// Получение списка продуктов
+    ///  - Parameter complition: Блок обрабатывающий резултат
+    func getArrayProducts(completion: @escaping (Result<[Catalog], RequestError>) -> Void)
+    
+    /// Получение данных товара
+    ///  - Parameter complition: Блок обрабатывающий резултат
+    func getDataProduct(completion: @escaping (Result<Product, RequestError>) -> Void)
 }
 
 /// Метод
@@ -28,11 +40,16 @@ fileprivate enum Methods: String {
     case login = "/GeekBrainsTutorial/online-store-api/master/responses/login.json"
     case logout = "/GeekBrainsTutorial/online-store-api/master/responses/logout.json"
     case registration = "/GeekBrainsTutorial/online-store-api/master/responses/registerUser.json"
+    case changeUserData = "/GeekBrainsTutorial/online-store-api/master/responses/changeUserData.json"
+    case catalog = "/GeekBrainsTutorial/online-store-api/master/responses/catalogData.json"
+    case product = "/GeekBrainsTutorial/online-store-api/master/responses/getGoodById.json"
+
 }
 
 /// Тип запроса
 fileprivate enum TypeRequest: String {
     case get = "GET"
+    case post = "POST"
 }
 
 /// Список ошибок
@@ -68,8 +85,6 @@ extension NetworkService: NetworkServiceInput {
     func registration(completion: @escaping (Result<RegistrationResult, RequestError>) -> Void) {
         DispatchQueue.global(qos: .utility).async { [self] in
             let url = configureUrl(method: .registration, httpMethod: .get)
-            
-            print(url)
             AF.request(url).responseData(queue: DispatchQueue.global()) { [weak self] response in
                 guard let data = response.data else { return }
                 do {
@@ -88,8 +103,6 @@ extension NetworkService: NetworkServiceInput {
     func logout(completion: @escaping (Result<LogoutResult, RequestError>) -> Void) {
         DispatchQueue.global(qos: .utility).async { [self] in
             let url = configureUrl(method: .logout, httpMethod: .get)
-            
-            print(url)
             AF.request(url).responseData(queue: DispatchQueue.global()) { [weak self] response in
                 guard let data = response.data else { return }
                 do {
@@ -109,8 +122,6 @@ extension NetworkService: NetworkServiceInput {
     func authorisation(completion: @escaping (Result<LoginResult, RequestError>) -> Void) {
         DispatchQueue.global(qos: .utility).async { [self] in
             let url = configureUrl(method: .login, httpMethod: .get)
-            
-            print(url)
             AF.request(url).responseData(queue: DispatchQueue.global()) { [weak self] response in
                 guard let data = response.data else { return }
                 do {
@@ -124,12 +135,65 @@ extension NetworkService: NetworkServiceInput {
             }
         }
     }
+    
+    /// Изменение данных пользователя
+    func changeUserData(completion: @escaping (Result<ChangeUserDataResult, RequestError>) -> Void) {
+        DispatchQueue.global(qos: .utility).async { [self] in
+            let url = configureUrl(method: .changeUserData, httpMethod: .post)
+            AF.request(url).responseData(queue: DispatchQueue.global()) { [weak self] response in
+                guard let data = response.data else { return }
+                do {
+                    guard let result = try self?.decoder.decode(ChangeUserDataResult.self, from: data) else {return}
+                    DispatchQueue.main.async {
+                        return completion(.success(result))
+                    }
+                } catch {
+                    return completion(.failure(.parseError))
+                }
+            }
+        }
+    }
+    
+    /// Получение списка продуктов
+    func getArrayProducts(completion: @escaping (Result<[Catalog], RequestError>) -> Void) {
+        DispatchQueue.global(qos: .utility).async { [self] in
+            let url = configureUrl(method: .catalog, httpMethod: .post)
+            AF.request(url).responseData(queue: DispatchQueue.global()) { [weak self] response in
+                guard let data = response.data else { return }
+                do {
+                    guard let result = try self?.decoder.decode([Catalog].self, from: data) else {return}
+                    DispatchQueue.main.async {
+                        return completion(.success(result))
+                    }
+                } catch {
+                    return completion(.failure(.parseError))
+                }
+            }
+        }
+    }
+    
+    /// Получение данных товара
+    func getDataProduct(completion: @escaping (Result<Product, RequestError>) -> Void) {
+        DispatchQueue.global(qos: .utility).async { [self] in
+            let url = configureUrl(method: .product, httpMethod: .post)
+            AF.request(url).responseData(queue: DispatchQueue.global()) { [weak self] response in
+                guard let data = response.data else { return }
+                do {
+                    guard let result = try self?.decoder.decode(Product.self, from: data) else {return}
+                    DispatchQueue.main.async {
+                        return completion(.success(result))
+                    }
+                } catch {
+                    return completion(.failure(.parseError))
+                }
+            }
+        }
+    }
 }
 
 // MARK: - Private
 private extension NetworkService {
-    func configureUrl(method: Methods,
-                      httpMethod: TypeRequest) -> URL {
+    func configureUrl(method: Methods, httpMethod: TypeRequest) -> URL {
         var urlComponents = URLComponents()
         urlComponents.scheme = scheme
         urlComponents.host = host

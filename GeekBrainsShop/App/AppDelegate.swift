@@ -10,56 +10,33 @@ import UIKit
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
-    /// Логин
-    let login = LoginBuilder.build()
+    let loginInteractor = LoginBuilder.build()
     
-    /// Регистрация
-    let regist = RegistrationBuilder.build()
-    
-    /// Logout
-    let logout = LogoutBuilder.build()
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        /// Login
-        let login = login.service
-        login.authorisation { result in
-            switch result {
-            case .success(let resultLogin):
-                print(resultLogin)
-            case .failure(let error):
-                print(error)
-            }
+        loginInteractor.login() { result in
+            print(result)
         }
-        
-        /// Registration
-        let regist = regist.service
-        regist.registration { result in
-            switch result {
-            case .success(let resultLogin):
-                print(resultLogin)
-            case .failure(let error):
-                print(error)
-            }
+        loginInteractor.logout() { result in
+            print(result)
         }
-        
-        
-        /// Logout
-        let logout = logout.service
-        logout.logout { result in
-            switch result {
-            case .success(let resultLogin):
-                print(resultLogin)
-            case .failure(let error):
-                print(error)
-            }
+        loginInteractor.registration() { result in
+            print(result)
+        }
+        loginInteractor.changeUserData() { result in
+            print(result)
+        }
+        loginInteractor.getArrayProduct { result in
+            print(result)
+        }
+        loginInteractor.getDataProduct { result in
+            print(result)
         }
         
         return true
     }
 
     // MARK: UISceneSession Lifecycle
-
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
         // Called when a new scene session is being created.
         // Use this method to select a configuration to create the new scene with.
@@ -74,4 +51,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
 }
-
