@@ -33,6 +33,14 @@ protocol LoginInteractorInput {
     /// Получение данных товара
     ///  - Parameter complition: Блок обрабатывающий резултат
     func getDataProduct(completion: @escaping (Result<Product, Error>) -> Void)
+    
+    /// Добавление коментария
+    ///  - Parameter complition: Блок обрабатывающий резултат
+    func removeReview(completion: @escaping (Result<RemoveReviewResult, Error>) -> Void)
+    
+    /// Добавление коментария
+    ///  - Parameter complition: Блок обрабатывающий резултат
+    func addReview(completion: @escaping (Result<AddReviewResult, Error>) -> Void)
 }
 
 // MARK: - LoginInteracotr
@@ -49,7 +57,7 @@ final class LoginInteracotr {
 
 // MARK: - Extension LoginInteracotr on the LoginInteractorInput
 extension LoginInteracotr: LoginInteractorInput {
-    
+
     /// Вход
     func login(completion: @escaping (Result<LoginResult, Error>) -> Void) {
         service?.authorisation { result in
@@ -116,6 +124,30 @@ extension LoginInteracotr: LoginInteractorInput {
             switch result {
             case .success(let product):
                 completion(.success(product))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    /// Удаление коментария
+    func removeReview(completion: @escaping (Result<RemoveReviewResult, Error>) -> Void) {
+        service?.removeReview { result in
+            switch result {
+            case .success(let reviewAnswer):
+                completion(.success(reviewAnswer))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    /// Добавление коментария
+    func addReview(completion: @escaping (Result<AddReviewResult, Error>) -> Void) {
+        service?.addReview { result in
+            switch result {
+            case .success(let reviewAnswer):
+                completion(.success(reviewAnswer))
             case .failure(let error):
                 completion(.failure(error))
             }
