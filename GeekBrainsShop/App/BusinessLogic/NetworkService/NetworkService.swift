@@ -41,6 +41,18 @@ protocol NetworkServiceInput {
     /// Удаление коментария
     ///  - Parameter complition: Блок обрабатывающий резултат
     func addReview(completion: @escaping (Result<AddReviewResult, RequestError>) -> Void)
+    
+    /// Добавление товара в корзину
+    ///  - Parameter complition: Блок обрабатывающий резултат
+    func addToBasket(completion: @escaping (Result<AddToBasketResult, RequestError>) -> Void)
+    
+    /// Удаление товара в корзину
+    ///  - Parameter complition: Блок обрабатывающий резултат
+    func deleteFromBasket(completion: @escaping (Result<DeletFromBasket, RequestError>) -> Void)
+    
+    /// Покупка товаров в корзине
+    ///  - Parameter complition: Блок обрабатывающий резултат
+    func payBasket(completion: @escaping (Result<PayBasketResult, RequestError>) -> Void)
 }
 
 /// Метод
@@ -53,6 +65,9 @@ fileprivate enum Methods: String {
     case product = "/getProduct"
     case removeReview = "/removeReview"
     case addReview = "/addReview"
+    case addToBasket = "/addToBasket"
+    case deleteFromBasket = "/deleteFromBasket"
+    case payBasket = "/payBasket"
 
 }
 
@@ -229,6 +244,60 @@ extension NetworkService: NetworkServiceInput {
                 guard let data = response.data else { return }
                 do {
                     guard let result = try self?.decoder.decode(AddReviewResult.self, from: data) else {return}
+                    DispatchQueue.main.async {
+                        return completion(.success(result))
+                    }
+                } catch {
+                    return completion(.failure(.parseError))
+                }
+            }
+        }
+    }
+    
+    /// Добавление товара в корзину
+    func addToBasket(completion: @escaping (Result<AddToBasketResult, RequestError>) -> Void) {
+        DispatchQueue.global(qos: .utility).async { [self] in
+            let url = configureUrlOnline(method: .addReview, httpMethod: .get)
+            AF.request(url).responseData(queue: DispatchQueue.global()) { [weak self] response in
+                guard let data = response.data else { return }
+                do {
+                    guard let result = try self?.decoder.decode(AddToBasketResult.self, from: data) else {return}
+                    DispatchQueue.main.async {
+                        return completion(.success(result))
+                    }
+                } catch {
+                    return completion(.failure(.parseError))
+                }
+            }
+        }
+    }
+    
+    /// Удаление товара в корзину
+    func deleteFromBasket(completion: @escaping (Result<DeletFromBasket, RequestError>) -> Void) {
+        DispatchQueue.global(qos: .utility).async { [self] in
+            let url = configureUrlOnline(method: .addReview, httpMethod: .get)
+            AF.request(url).responseData(queue: DispatchQueue.global()) { [weak self] response in
+                guard let data = response.data else { return }
+                do {
+                    guard let result = try self?.decoder.decode(DeletFromBasket.self, from: data) else {return}
+                    DispatchQueue.main.async {
+                        return completion(.success(result))
+                    }
+                } catch {
+                    return completion(.failure(.parseError))
+                }
+            }
+        }
+    }
+    
+    /// Покупка товаров в корзине
+    func payBasket(completion: @escaping (Result<PayBasketResult, RequestError>) -> Void) {
+        DispatchQueue.global(qos: .utility).async { [self] in
+            let url = configureUrlOnline(method: .payBasket, httpMethod: .get)
+            AF.request(url).responseData(queue: DispatchQueue.global()) { [weak self] response in
+                guard let data = response.data else { return }
+                do {
+                    guard let result = try self?.decoder.decode(PayBasketResult.self, from: data) else {return}
                     DispatchQueue.main.async {
                         return completion(.success(result))
                     }
