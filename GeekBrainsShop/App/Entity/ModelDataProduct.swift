@@ -9,15 +9,18 @@ import Foundation
 
 // MARK: - Product
 struct Product: Codable {
-    let result: Int
-    let productName: String
-    let productPrice: Int
-    let productDescription: String
+    let result: ItemProduct
+}
 
-    enum CodingKeys: String, CodingKey {
-        case result
-        case productName = "product_name"
-        case productPrice = "product_price"
-        case productDescription = "product_description"
-    }
+// MARK: - Result
+struct ItemProduct: Codable {
+    let productName, productDescription: String
+    let result, productPrice: Int
+    let reviews: [ReviewProduct]
+}
+
+// MARK: - Review
+struct ReviewProduct: Codable {
+    let massageReview, nameUserReview: String
+    let idUserReview: Int
 }

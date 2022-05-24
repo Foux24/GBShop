@@ -32,6 +32,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         loginInteractor.getDataProduct { result in
             print(result)
         }
+        loginInteractor.removeReview { result in
+            print(result)
+        }
+        loginInteractor.addReview { result in
+            print(result)
+        }
+        loginInteractor.addToBasket { result in
+            print(result)
+        }
+        loginInteractor.deleteFromBasket { result in
+            print(result)
+        }
+        loginInteractor.payPasket { result in
+            print(result)
+        }
         
         return true
     }

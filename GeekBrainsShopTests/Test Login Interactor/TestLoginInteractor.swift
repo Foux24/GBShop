@@ -103,7 +103,22 @@ class TestLoginInteractor: XCTestCase {
         self.interactor.getDataProduct() { result in
             switch result {
             case .success(let product):
-                XCTAssertEqual(product.result, 1)
+                XCTAssertEqual(product.result.result, 1)
+            case .failure(_):
+                XCTFail()
+            }
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 10)
+    }
+    
+    /// TestPayBasket
+    func testPayBasket() {
+        let expectation = XCTestExpectation(description: "payBasket")
+        self.interactor.payPasket { result in
+            switch result {
+            case .success(let answer):
+                XCTAssertEqual(answer.result, 1)
             case .failure(_):
                 XCTFail()
             }
