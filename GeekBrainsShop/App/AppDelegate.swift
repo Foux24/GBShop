@@ -15,21 +15,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         loginInteractor.login() { result in
-            print(result)
+//            print(result)
         }
         loginInteractor.logout() { result in
-            print(result)
+//            print(result)
         }
         loginInteractor.registration() { result in
-            print(result)
+//            print(result)
         }
         loginInteractor.changeUserData() { result in
-            print(result)
+//            print(result)
         }
         loginInteractor.getArrayProduct { result in
-            print(result)
+//            print(result)
         }
         loginInteractor.getDataProduct { result in
+//            print(result)
+        }
+        loginInteractor.removeReview { result in
+            print(result)
+        }
+        loginInteractor.addReview { result in
             print(result)
         }
         
